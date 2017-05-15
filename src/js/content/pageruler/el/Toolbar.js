@@ -46,6 +46,7 @@ pr.el.Toolbar = pr.cls(
 		var positionContainer		= this.generatePositionContainer();
 		var colorContainer			= this.generateColorContainer();
 		var guidesContainer			= this.generateGuidesContainer();
+		var borderSearchContainer	= this.generateBorderSearchContainer();
 
 		// add contents to container
 		pr.El.appendEl(container, [
@@ -56,7 +57,8 @@ pr.el.Toolbar = pr.cls(
 			dimensionsContainer,
 			positionContainer,
 			colorContainer,
-			guidesContainer
+			guidesContainer,
+			borderSearchContainer
 		]);
 
 		this.elementToolbar = new pr.el.ElementToolbar(this);
@@ -106,6 +108,21 @@ pr.el.Toolbar = pr.cls(
 			}
 		);
 
+		// set the border search visiblity
+		chrome.runtime.sendMessage(
+			{
+				action:	'getBorderSearch'
+			},
+			function(visible) {
+				// set border search visibility
+				pr.elements.ruler.setBorderSearchVisibility(visible, false);
+
+				// if not visible then also change the toggle
+				if (!visible) {
+					_this.els.borderSearch.checked = false;
+				}
+			}
+		);
 	},
 	{
 
@@ -603,6 +620,86 @@ pr.el.Toolbar = pr.cls(
 			]);
 
 			return guidesContainer;
+
+		},
+
+		generateBorderSearchContainer: function() {
+
+			// create container
+			var borderSearchContainer = pr.El.createEl('div', {
+				'id':	'toolbar-borderSearch-container',
+				'cls':	'container'
+			});
+
+			// create label
+			var label = pr.El.createEl('label', {
+				'id':	'toolbar-borderSearch-label',
+				'for':	'toolbar-borderSearch-input'
+			}, {}, pr.Util.locale('toolbarBorderSearch') + ':');
+
+			var lang = (navigator.language || '').split('-')[0];
+			if (!!lang) {
+				lang = 'lang_' + lang;
+			}
+
+			// create toggle element
+			var toggle = pr.El.createEl('div', {
+				'id':	'toolbar-borderSearch-toggle',
+				'cls':	'checkbox-toggle ' + lang
+			});
+
+			// create checkbox element
+			var input = pr.El.createEl('input', {
+				'id':		'toolbar-borderSearch-input',
+				'type':		'checkbox',
+				'checked':	true
+			}, {
+				'change': function(e) {
+					console.log('saving setBorderSearchVisibility');
+					pr.elements.ruler.setBorderSearchVisibility(this.checked, true);
+				}
+			});
+
+			// set reference to checkbox
+			this.els.borderSearch = input;
+
+			// create toggle label
+			var toggleLabel = pr.El.createEl('label', {
+				'id':	'toolbar-borderSearch-toggle-label',
+				'for':	'toolbar-borderSearch-input'
+			});
+
+			// create label inner
+			var labelInner = pr.El.createEl('div', {
+				'id':		'toolbar-borderSearch-label-inner',
+				'class':	'inner'
+			});
+
+			// create label switch
+			var labelSwitch = pr.El.createEl('div', {
+				'id':		'toolbar-borderSearch-label-switch',
+				'class':	'switch ' + lang
+			});
+
+			// add label contents
+			pr.El.appendEl(toggleLabel, [
+				labelInner,
+				labelSwitch
+			]);
+
+			// add toggle contents
+			pr.El.appendEl(toggle, [
+				input,
+				toggleLabel
+			]);
+
+			// add container contents
+			pr.El.appendEl(borderSearchContainer, [
+				label,
+				toggle
+			]);
+
+			return borderSearchContainer;
 
 		},
 

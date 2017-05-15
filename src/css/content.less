@@ -261,6 +261,13 @@ input {
 		}
 	}
 
+	#page-ruler-toolbar-borderSearch-container {
+		padding-top:	2px !important;
+		> label {
+			top: -8px !important;
+		}
+	}
+
 	#page-ruler-toolbar-container {
 		height:				@toolbar-height !important;
 		display:			table-cell !important;
@@ -379,8 +386,7 @@ input {
 		width:		100% !important;
 		height:		100% !important;
 		cursor:		move !important;
-		overflow:	hidden !important;
-
+		
 		.page-ruler-corner {
 			position:		absolute !important;
 			width:			16px !important;
@@ -449,6 +455,10 @@ input {
 			cursor:			sw-resize !important;
 		}
 
+		.page-ruler-bordersearch {
+			cursor: pointer !important;
+		}
+
 		.page-ruler-bottom-right {
 			bottom:			0px !important;
 			right:			0px !important;
@@ -457,6 +467,53 @@ input {
 			cursor:			se-resize !important;
 		}
 
+		.page-ruler-bordersearch-ud-left-top {
+			top:		-16px !important;
+			left:		0px !important;
+			content: 	url('images/arrow-up.png');
+		}
+
+		.page-ruler-bordersearch-ud-right-top {
+			top:		-16px !important;
+			right:		0px !important;
+			content: 	url('images/arrow-up.png');
+		}
+
+		.page-ruler-bordersearch-lr-left-top {
+			top:		0px !important;
+			left:		-16px !important;
+			content: 	url('images/arrow-left.png');
+		}
+
+		.page-ruler-bordersearch-lr-left-bottom {
+			bottom:		0px !important;
+			left:		-16px !important;
+			content: 	url('images/arrow-left.png');
+		}
+
+		.page-ruler-bordersearch-lr-right-top {
+			top:		0px !important;
+			right:		-16px !important;
+			content: 	url('images/arrow-right.png');
+		}
+
+		.page-ruler-bordersearch-lr-right-bottom {
+			bottom:		0px !important;
+			right:		-16px !important;
+			content: 	url('images/arrow-right.png');
+		}
+
+		.page-ruler-bordersearch-ud-left-bottom {
+			bottom:		-16px !important;
+			left:		0px !important;
+			content: 	url('images/arrow-down.png');
+		}
+
+		.page-ruler-bordersearch-ud-right-bottom {
+			bottom:		-16px !important;
+			right:		0px !important;
+			content: 	url('images/arrow-down.png');
+		}
 	}
 
 	&.page-ruler-tracking {
@@ -595,6 +652,15 @@ input {
 		}
 	}
 	#page-ruler-toolbar-guides-toggle {
+		margin-top: 3px !important;
+		transform: scale(0.8) !important;
+	}
+	#page-ruler-toolbar-borderSearch-container {
+		> label {
+			display: none !important;
+		}
+	}
+	#page-ruler-toolbar-borderSearch-toggle {
 		margin-top: 3px !important;
 		transform: scale(0.8) !important;
 	}
