@@ -2,26 +2,26 @@
 
 	"extName": {
 		"message": "Page Ruler",
-		"description": "Extension name"
+		"description": "اسم الإضافى"
 	},
 
 	"extShortName": {
 		"message": "Page Ruler",
-		"description": "Extension short name (maximum 12 characters)"
+		"description": "الاسم المختصر للإضافة"
 	},
 
 	"extDescription": {
 		"message": "Draw a ruler to get pixel dimensions and positioning, and measure elements on any web page.",
-		"description": "Extension description (maximum 132 characters)"
+		"description": "وصف الإضافة"
 	},
 
 	"toolbarWidth": {
-		"message": "Width",
+		"message": "عرض",
 		"description": "Label for the width input in the toolbar"
 	},
 
 	"toolbarHeight": {
-		"message": "Height",
+		"message": "طول",
 		"description": "Label for the height input in the toolbar"
 	},
 
