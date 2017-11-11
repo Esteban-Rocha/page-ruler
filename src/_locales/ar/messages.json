@@ -2,7 +2,7 @@
 
 	"extName": {
 		"message": "Page Ruler",
-		"description": "اسم الإضافى"
+		"description": "اسم الإضافة"
 	},
 
 	"extShortName": {
@@ -26,32 +26,32 @@
 	},
 
 	"toolbarLeft": {
-		"message": "Left",
+		"message": "يسار",
 		"description": "Label for the left input in the toolbar"
 	},
 
 	"toolbarRight": {
-		"message": "Right",
+		"message": "يمين",
 		"description": "Label for the right input in the toolbar"
 	},
 
 	"toolbarTop": {
-		"message": "Top",
+		"message": "فوق",
 		"description": "Label for the top input in the toolbar"
 	},
 
 	"toolbarBottom": {
-		"message": "Bottom",
+		"message": "تحت",
 		"description": "Label for the bottom input in the toolbar"
 	},
 
 	"toolbarColor": {
-		"message":	"Color",
+		"message":	"لون",
 		"description": "Label for the color picker in the toolbar"
 	},
 
 	"toolbarClose": {
-		"message": "Close",
+		"message": "غلق",
 		"description": "Tooltip for the toolbar close button which closes the addon"
 	},
 
@@ -76,12 +76,12 @@
 	},
 
 	"elementToolbarParentNode": {
-		"message": "Parent node",
+		"message": "عقدة أصل",
 		"description": "Title for the parent node of the highlighted element in tracking mode"
 	},
 
 	"elementToolbarChildNode": {
-		"message": "Child node",
+		"message": "عقدة فرع",
 		"description": "Title for the child node of the highlighted element in tracking mode"
 	},
 
@@ -96,17 +96,17 @@
 	},
 
 	"elementToolbarTrackingMode": {
-		"message": "Tracking Mode",
+		"message": "وضع التتبع",
 		"description": "Label for the tracking mode toggle button"
 	},
 
 	"elementToolbarToggleOn": {
-		"message": "On",
+		"message": "مفَعَّـل",
 		"description": "The on state text for the tracking mode toggle button"
 	},
 
 	"elementToolbarToggleOff": {
-		"message": "Off",
+		"message": "غير مفعل",
 		"description": "The off state text for the tracking mode toggle button"
 	},
 
@@ -116,7 +116,7 @@
 	},
 
 	"optionsStatisticsLabel": {
-		"message": "Send Anonymous Usage Statistics:",
+		"message": "إرسال إحصائيات الاستعمال بصفة مجهول:",
 		"description": "The label for the send anonymouse usage statistics checkbox"
 	},
 
@@ -147,7 +147,7 @@
     },
 
     "updateTranslateTitle": {
-        "message": "Translate",
+        "message": "ترجم",
         "desciption": "Title for the translate section in the contribute side box"
     },
 
@@ -157,7 +157,7 @@
     },
 
     "updateContributorsTitle": {
-        "message": "Contributors",
+        "message": "المساهمون",
         "desciption": "Title for the contributors side box"
     },
 
@@ -167,17 +167,17 @@
     },
 
 	"updateIconsTitle": {
-		"message": "Icons",
+		"message": "أيقونات",
 		"desciption": "Title for the icons section in the contributors side box"
 	},
 
     "updateTranslationsTitle": {
-        "message": "Translations",
+        "message": "ترجمات",
         "desciption": "Title for the translations section in the contributors side box"
     },
 
     "updateHistoryTitle": {
-        "message": "Latest Updates",
+        "message": "التحديثات الأخيرة",
         "desciption": "Title for the update history section"
     },
 
@@ -199,12 +199,12 @@
 	},
 
 	"updateDoNotShowPageAgain": {
-		"message": "Do not show this page again",
+		"message": "لا تظهر هذه الصفحة مجددا",
 		"description": "Label for the do not show this page again checkbox on the update page"
 	},
 
 	"optionsHideUpdateTabLabel": {
-		"message": "Do Not Show Update Tab:",
+		"message": "لا تظهر تبويب التحديث:",
 		"description": "The label for the do not show update tab checkbox"
 	},
 
@@ -233,7 +233,7 @@
 	},
 
 	"updateKeyBoardShortcuts": {
-		"message": "Keyboard Shortcuts",
+		"message": "اختصارات لوحة المفاتيح",
 		"description": "The title for the keyboard shortcuts section"
 	},
 
@@ -243,7 +243,7 @@
 	},
 
 	"updateKeyboardShortcutsRuler": {
-		"message": "Ruler",
+		"message": "مسطرة",
 		"description": "Title for the ruler arrow keys section"
 	},
 
@@ -316,7 +316,7 @@
 	},
 
 	"updateKeyBoardShortcutsGeneral": {
-		"message": "General Shortcuts",
+		"message": "اختصارات عامة",
 		"description": "Title for general shortcuts section"
 	},
 
@@ -346,12 +346,12 @@
 	},
 
 	"updateSupportDonateText": {
-		"message": "Read More and Donate",
+		"message": "اقرأ المزيد وتبرغ",
 		"description": "Donate button text"
 	},
 
 	"updateOtherExtensionsText": {
-		"message": "My Other Extensions",
+		"message": "ملحقاتي الأخرى",
 		"description": "Other extensions section title"
 	},
 
