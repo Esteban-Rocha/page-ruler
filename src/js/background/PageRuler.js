@@ -4,6 +4,16 @@
 var PageRuler = {
 
 	/**
+	 * Used to hold the screenshot for border searching
+	 */
+	screenshot: new Image(),
+
+	/**
+	 * Used to extract image data for border searching
+	 */
+  	canvas: document.createElement('canvas'),
+
+	/**
 	 * Addon initialisation
 	 */
 	init:		function(type, previousVersion) {
@@ -228,8 +238,22 @@ var PageRuler = {
 
         }
 
-    }
+    },
 
+	greyscaleConvert: function(imgData) {
+		var grey = new Int16Array(imgData.length / 4);
+
+		for(var i=0, n=0; i<imgData.length; i+=4, n++) {
+			var r = imgData[i],
+				g = imgData[i+1],
+				b = imgData[i+2];
+
+			// Greyscale - REC 709 (or BT.709) formula
+			grey[n] = Math.round(r * 0.2126 + g * 0.7152 + b * 0.0722);
+		}
+
+		return grey;
+	}
 };
 
 /**
@@ -277,7 +301,91 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	console.log('sender: ', sender);
 
 	switch (message.action) {
+		case 'borderSearch':
+			chrome.tabs.captureVisibleTab({ format: "png" }, function(dataUrl) {
+				PageRuler.screenshot.onload = function() {
+					var ctx = PageRuler.canvas.getContext('2d');
+					
+					// adjust the canvas size to the screenshot size
+					PageRuler.canvas.width = sender.tab.width;
+					PageRuler.canvas.height = sender.tab.height;
+					
+					// draw the image to the canvas
+					ctx.drawImage(PageRuler.screenshot, 0, 0, PageRuler.canvas.width, PageRuler.canvas.height);
+					
+					// The x,y from the Ruler are CSS pixels.
+					// We need to use the devicePixelRation to get the real pizel locaton in the canvas image.
+					// We also include the yOffset to account for page scrolling and the menu bar.
+					var startX = Math.floor(message.x * message.devicePixelRatio);
+					var startY = Math.floor((message.y * message.devicePixelRatio) + (message.yOffset * message.devicePixelRatio));
+					var imageLine
 
+					// Take a think slice of the image to hunt for a color border
+					if (message.xDir > 0) {
+						imageLine = ctx.getImageData(startX, startY, PageRuler.canvas.width - startX, 1).data;
+					} else if (message.xDir < 0) {
+						imageLine = ctx.getImageData(0, startY, startX + 1, 1).data;
+					} else if (message.yDir > 0) {
+						imageLine = ctx.getImageData(startX, startY, 1, PageRuler.canvas.height - startY).data;
+					} else {
+						imageLine = ctx.getImageData(startX, 0, 1, startY + 1).data;
+					}
+
+					// Convert to greyscale for easier border detection
+					var gsData = PageRuler.greyscaleConvert(imageLine);
+
+					var startPixel;
+					var index = 0;
+					var direction = 1;
+					var checks = 0;
+					var nextPixel
+					var threshHold = 10;
+					
+					// If looking left/up, need to search from the end of the image data
+					if (message.xDir < 0 || message.yDir < 0) {
+						index = gsData.length - 1;
+						direction = -1;
+					}
+
+					// Starting pixel color
+					startPixel = gsData[index];
+					
+					// Start searching with the next pixel
+					index+= direction;
+
+					// Search until the end of data is reached or a border is found.
+					while (index >= 0 && index < gsData.length) {
+						nextPixel = gsData[index]
+						checks++;
+
+						// Break if we hit the threshold
+						if (Math.abs(startPixel - nextPixel) > threshHold)
+						{
+							break;
+						}
+
+						index+= direction;
+					}
+
+					// We will set the location to the pixel just before the border
+					// so the Ruler includes the current region.
+					// If we only moved 1 pixel then move to the next region
+					var spotsToMove = checks <= 1 ? checks : checks - 1;
+
+					// Convert the x,y for the final location back to CSS pixels
+					var response = {
+						x: Math.floor((startX + (spotsToMove * message.xDir)) / message.devicePixelRatio), 
+						y: Math.floor(((startY + (spotsToMove * message.yDir)) - (message.yOffset * message.devicePixelRatio)) / message.devicePixelRatio)
+					};
+					
+					sendResponse(response);
+				}
+
+				PageRuler.screenshot.src = dataUrl;
+			});
+
+			break;
+			
 		// check whether the addon content script is loaded and it's active state
 		case 'loadtest':
 
@@ -407,6 +515,31 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 				var visiblity = items.hasOwnProperty('guides') ? items.guides : true;
 
 				console.log('guides visibility requested: ' + visiblity);
+
+				sendResponse(visiblity);
+
+			});
+
+			break;
+
+		// sets whether border search is visible
+		case 'setBorderSearch':
+
+			PageRuler.Analytics.trackEvent('Settings', 'BorderSearch', message.visible && 'On' || 'Off');
+
+			chrome.storage.sync.set({
+				'borderSearch':	message.visible
+			});
+
+			break;
+
+		// gets the border search visibility
+		case 'getBorderSearch':
+
+			chrome.storage.sync.get('borderSearch', function(items) {
+
+				// get borer search or default to false
+				var visiblity = items.hasOwnProperty('borderSearch') ? items.borderSearch : false;
 
 				sendResponse(visiblity);
 

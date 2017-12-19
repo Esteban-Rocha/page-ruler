@@ -187,6 +187,17 @@ pr.el.Ruler = pr.cls(
             bottomRight:    null
         },
 
+		borderSearchElements: {
+			udLeftTop:		null,
+			udRightTop:		null,
+			lrLeftTop:		null,
+			lrRightTop:		null,
+			lrLeftBottom: 	null,
+			lrRightBottom:	null,
+			udLeftBottom:		null,
+			udRightBottom:	null
+		},
+
 		/**
 		 * The current ruler width
 		 * @type {number}
@@ -346,6 +357,27 @@ pr.el.Ruler = pr.cls(
 				this.resizeElements.bottomRight.dom
 			]);
 
+			// add the color-jump elements to the container
+			this.borderSearchElements.udLeftTop		= new pr.el.BorderSearch(this, 'ud', 'left', 'top', 'corner page-ruler-bordersearch');
+			this.borderSearchElements.udRightTop		= new pr.el.BorderSearch(this, 'ud', 'right', 'top', 'corner page-ruler-bordersearch');
+			this.borderSearchElements.lrLeftTop		= new pr.el.BorderSearch(this, 'lr', 'left', 'top', 'corner page-ruler-bordersearch');
+			this.borderSearchElements.lrRightTop		= new pr.el.BorderSearch(this, 'lr', 'right', 'top', 'corner page-ruler-bordersearch');
+			this.borderSearchElements.lrLeftBottom		= new pr.el.BorderSearch(this, 'lr', 'left', 'bottom', 'corner page-ruler-bordersearch');
+			this.borderSearchElements.lrRightBottom	= new pr.el.BorderSearch(this, 'lr', 'right', 'bottom', 'corner page-ruler-bordersearch');
+			this.borderSearchElements.udLeftBottom		= new pr.el.BorderSearch(this, 'ud', 'left', 'bottom', 'corner page-ruler-bordersearch');
+			this.borderSearchElements.udRightBottom	= new pr.el.BorderSearch(this, 'ud', 'right', 'bottom', 'corner page-ruler-bordersearch');
+
+			pr.El.appendEl(container, [
+				this.borderSearchElements.udLeftTop.dom,
+				this.borderSearchElements.udRightTop.dom,
+				this.borderSearchElements.lrLeftTop.dom,
+				this.borderSearchElements.lrRightTop.dom,
+				this.borderSearchElements.lrLeftBottom.dom,
+				this.borderSearchElements.lrRightBottom.dom,
+				this.borderSearchElements.udLeftBottom.dom,
+				this.borderSearchElements.udRightBottom.dom
+			]);
+
 			// add the container to the ruler
 			pr.El.appendEl(this.ruler, container);
 
@@ -361,7 +393,6 @@ pr.el.Ruler = pr.cls(
 					_this.setColor(color, false);
 				}
 			);
-
         },
 
 		/**
@@ -383,6 +414,68 @@ pr.el.Ruler = pr.cls(
 		},
 
 		/**
+		 * Search in a direction for a color change (border) to move the ruler to.
+		 */
+		borderSearch: function(positionDir, leftOrRight, topOrBottom) {
+			var _this = this;
+			var x = leftOrRight === 'left' ? _this.left : _this.right;
+			var y = topOrBottom === 'top' ? _this.top : _this.bottom;
+			var xDir = 0;
+			var yDir = 0;
+
+			if (positionDir === 'lr') {
+				xDir = leftOrRight === 'left' ? -1 : 1;
+			} else {
+				yDir = topOrBottom === 'top' ? -1 : 1;
+			}
+
+			// hide mask, ruler and guides so we can get the correct screenshot
+			pr.elements.mask.dom.style.setProperty('display', 'none', 'important');
+			_this.ruler.style.setProperty('display', 'none', 'important');
+			if (_this.guides.visible) {
+				_this.guides.hide();
+			}
+
+			setTimeout(function() {
+				// Send a message because Chrome's screenshot function is only available
+				// to the background page.
+				chrome.runtime.sendMessage({
+					action:	'borderSearch',
+					x: x,
+					y: y,
+					xDir: xDir,
+					yDir: yDir,
+					yOffset: _this.toolbar.height - window.pageYOffset,
+					devicePixelRatio: window.devicePixelRatio
+				}, function(response) {
+					if (leftOrRight === 'left') {
+						var newWidth = _this.width + (_this.left - response.x);
+						_this.setLeft(response.x);
+						_this.setWidth(newWidth);
+					} else {
+						_this.setWidth(_this.width + (response.x - _this.right));
+					}
+
+					if (topOrBottom === 'top') {
+						var newHeight = _this.height + (_this.top - response.y);
+						_this.setTop(response.y);
+						_this.setHeight(newHeight);
+						
+					} else {
+						_this.setHeight(_this.height + (response.y - _this.bottom));
+					}
+
+					// show the mask, ruler and element again
+					pr.elements.mask.dom.style.removeProperty('display');
+					_this.ruler.style.removeProperty('display');
+					if (_this.guides.visible) {
+						_this.guides.show();
+					}
+				});
+			}, 1);
+		},
+
+		/**
 		 * Sets the color of the ruler
 		 * @param {string} hex		The hex color value
 		 * @param {booleab} save	Whether to save the color for next time
@@ -400,6 +493,15 @@ pr.el.Ruler = pr.cls(
 			this.resizeElements.topRight.setColor(hex);
 			this.resizeElements.bottomLeft.setColor(hex);
 			this.resizeElements.bottomRight.setColor(hex);
+
+			this.borderSearchElements.udLeftTop.setColor(hex);
+			this.borderSearchElements.udRightTop.setColor(hex);
+			this.borderSearchElements.lrLeftTop.setColor(hex);
+			this.borderSearchElements.lrLeftBottom.setColor(hex);
+			this.borderSearchElements.lrRightTop.setColor(hex);
+			this.borderSearchElements.lrRightBottom.setColor(hex);
+			this.borderSearchElements.udLeftBottom.setColor(hex);
+			this.borderSearchElements.udRightBottom.setColor(hex);
 
 			// set the border colour on the guides
 			this.guides.setColor(hex);
@@ -1027,8 +1129,34 @@ pr.el.Ruler = pr.cls(
 			// update the guides
 			this.guides.setSizes();
 
-		}
+		},
 
+		setBorderSearchVisibility: function(visible, save) {
+			
+			this.setElementVisibility(this.borderSearchElements.udLeftTop, visible);
+			this.setElementVisibility(this.borderSearchElements.udRightTop, visible);
+			this.setElementVisibility(this.borderSearchElements.lrLeftTop, visible);
+			this.setElementVisibility(this.borderSearchElements.lrRightTop, visible);
+			this.setElementVisibility(this.borderSearchElements.lrLeftBottom, visible);
+			this.setElementVisibility(this.borderSearchElements.lrRightBottom, visible);
+			this.setElementVisibility(this.borderSearchElements.udLeftBottom, visible);
+			this.setElementVisibility(this.borderSearchElements.udRightBottom, visible);
+
+			if (save) {
+				chrome.runtime.sendMessage({
+					action:		'setBorderSearch',
+					visible:	visible
+				});
+			}
+		},
+
+		setElementVisibility: function(element, visible) {
+			if (visible) {
+				element.dom.style.removeProperty('display');
+			} else {
+				element.dom.style.setProperty('display', 'none', 'important');
+			}
+		}
 	}
 );
 

@@ -358,6 +358,10 @@
 	"updatePageTitleInstall": {
 		"message": "Page Ruler Installed",
 		"description": "Page title for the install page"
-	}
+	},
 
+	"toolbarBorderSearch": {
+		"message":	"Border Search",
+		"description": "Label for the show border search toggle in the toolbar"
+	}
 }
